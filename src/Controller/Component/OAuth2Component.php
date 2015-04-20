@@ -7,6 +7,8 @@ use Cake\Network\Request;
 use Cake\Event\Event;
 use Cake\Event\EventManagerTrait;
 use Cake\Network\Response;
+use Cake\ORM\TableRegistry;
+use OAuth2\Server as OAuth2Server;
 
 class OAuth2Component extends Component {
     use EventManagerTrait;
@@ -33,6 +35,13 @@ class OAuth2Component extends Component {
     public $response;
 
     /**
+     * OAuth2Server Object
+     *
+     * @var object
+     */
+    public $OAuth2Server;
+
+    /**
      * Initialize properties.
      *
      * @param array $config The config data.
@@ -44,6 +53,10 @@ class OAuth2Component extends Component {
         $this->eventManager($controller->eventManager());
         $this->request = $controller->request;
         $this->response = $controller->response;
+        $this->OAuth2Server = new OAuth2Server([
+            'access_token' => TableRegistry::get('OAuth2.AccessTokens'),
+            'client_credentials' => TableRegistry::get('OAuth2.ClientCredentials')
+        ]);
     }
 
     /**
