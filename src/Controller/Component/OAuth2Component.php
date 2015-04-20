@@ -8,6 +8,8 @@ use Cake\Event\Event;
 use Cake\Event\EventManagerTrait;
 use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
+use OAuth2\Request as OAuth2Request;
 use OAuth2\Server as OAuth2Server;
 
 class OAuth2Component extends Component {
@@ -57,6 +59,11 @@ class OAuth2Component extends Component {
             'access_token' => TableRegistry::get('OAuth2.AccessTokens'),
             'client_credentials' => TableRegistry::get('OAuth2.ClientCredentials')
         ]);
+
+        // Merge controller allowedActions with defaults
+        if(isset($controller->allowedActions)&&is_array($controller->allowedActions)) {
+            $this->allowedActions = Hash::merge($this->allowedActions, $controller->allowedActions);
+        }
     }
 
     /**
@@ -74,7 +81,7 @@ class OAuth2Component extends Component {
             return;
         }
 
-        if ($this->_isAllowed($controller)) {
+        if ($this->_isAllowed($action)) {
             return;
         }
 
@@ -82,13 +89,18 @@ class OAuth2Component extends Component {
         return $this->_unauthorized($controller);
     }
 
+    public function handleTokenRequest() {
+        $this->OAuth2Server->handleTokenRequest(OAuth2Request::createFromGlobals())->send();
+        exit();
+    }
+
     /**
      * Checks if user is valid using OAuth2 library
      *
      * @return boolean true if allowed, false if not
      */
-    protected function _isAllowed($controller) {
-        return false;
+    protected function _isAllowed($action) {
+        return Hash::check($this->allowedActions, $action);
     }
 
     /**
