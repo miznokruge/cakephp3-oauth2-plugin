@@ -1,0 +1,24 @@
+{
+    "name": "djgorilla/cakephp3-oauth2-plugin",
+    "description": "OAuth2 plugin for CakePHP3",
+    "keywords":["oauth","oauth2","auth"],
+    "type": "cakephp-plugin",
+    "license":"MIT",
+    "authors":[
+      {
+        "name":"Andreas Lange",
+        "email": "a.lange@aliviar.de",
+        "homepage":"http://aliviar.de"
+      }
+    ],
+    "require": {
+        "php": ">=5.4.16",
+        "cakephp/cakephp": "~3.0",
+        "bshaffer/oauth2-server-php": "v1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "OAuth2\\": "src"
+        }
+    }
+}
